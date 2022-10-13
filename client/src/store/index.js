@@ -106,6 +106,29 @@ export const useGlobalStore = () => {
                 return store;
         }
     }
+
+    store.createNewList = function(){
+        let list = {
+            name: "Untitled",
+            songs: []
+        };
+        api.createPlaylist(list);
+
+        storeReducer({
+            type: GlobalStoreActionType.CREATE_NEW_LIST,
+            payload: {
+                list
+            }
+        });
+
+
+        setTimeout(() => {
+            this.loadIdNamePairs();
+          }, 100)
+          
+             
+
+    }
     // THESE ARE THE FUNCTIONS THAT WILL UPDATE OUR STORE AND
     // DRIVE THE STATE OF THE APPLICATION. WE'LL CALL THESE IN 
     // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
