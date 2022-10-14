@@ -87,9 +87,34 @@ getPlaylistPairs = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+updatePlaylistById = async (req, res) => {
+
+    console.log("updating playlist name...");
+    let body = req.body;
+
+    if (!body.name.length) {
+        return res
+            .status(404)
+            .json({ success: false, error: 'Playlist name cannot be empty'})
+    }
+    else {
+        await Playlist.replaceOne({ _id: req.params.id }, body, null,(err, list) => {
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            console.log("playlist name has been updated!");
+            return res.status(200).json({ success: true });
+
+        })
+    }
+
+}
+
+
 module.exports = {
     createPlaylist,
     getPlaylists,
     getPlaylistPairs,
-    getPlaylistById
+    getPlaylistById,
+    updatePlaylistById
 }

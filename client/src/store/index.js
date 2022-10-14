@@ -107,13 +107,15 @@ export const useGlobalStore = () => {
         }
     }
 
-    store.createNewList = function(){
+    store.createNewList = async function(){
         let list = {
             name: "Untitled",
             songs: []
         };
-        api.createPlaylist(list);
+        await api.createPlaylist(list);
 
+
+        this.loadIdNamePairs();
         storeReducer({
             type: GlobalStoreActionType.CREATE_NEW_LIST,
             payload: {
@@ -122,11 +124,17 @@ export const useGlobalStore = () => {
         });
 
 
-        setTimeout(() => {
-            this.loadIdNamePairs();
-          }, 100)
-          
-             
+        const response = await api.getPlaylistPairs();
+            if (response.data.success) {
+                let pairs = response.data.idNamePairs;
+                let _id = pairs[pairs.length-1]._id;
+                document.getElementById("edit-list-"+_id).click();
+                
+            }
+            else {
+                console.log("API FAILED TO GET THE LIST PAIRS");
+            }
+
 
     }
     // THESE ARE THE FUNCTIONS THAT WILL UPDATE OUR STORE AND
@@ -138,11 +146,13 @@ export const useGlobalStore = () => {
         // GET THE LIST
         async function asyncChangeListName(id) {
             let response = await api.getPlaylistById(id);
+            // console.log(response);
             if (response.data.success) {
-                let playlist = response.data.playist;
+                let playlist = response.data.playlist;
                 playlist.name = newName;
                 async function updateList(playlist) {
                     response = await api.updatePlaylistById(playlist._id, playlist);
+                    // console.log(response);
                     if (response.data.success) {
                         async function getListPairs(playlist) {
                             response = await api.getPlaylistPairs();
