@@ -22,12 +22,15 @@ body {
 
 #root {
   background-color: var(--swatch-primary);
-  font-family: "Lexend Exa";
+  font-family: times, "times new roman", serif;
   position: absolute;
   width: 80%;
   left: 10%;
   height:90%;
   top: 5%;
+}
+#playlister-banner{
+  text-align: center;
 }
 
 #app-root {
@@ -71,17 +74,24 @@ body {
 }
 
 .playlister-button, .playlister-button-disabled {
-  font-size:36pt;
-  border-width: 0px;
+  align-content: center;
+  font-size:30pt;
+  width: 50px;
+  height:74px;
+  border-color: #111111;
+  border-width: 1px;
   float:left;
   color: black;
   cursor: pointer;
   opacity: 100%;
+  border-radius: 5px;
 }
 
 .playlister-button:hover {
   cursor: pointer;
-  color:black;
+  color:#666666;
+  background-color: lightgray
+  /* opacity: 80%; */
 }
 
 .playlister-button-disabled {
@@ -150,6 +160,19 @@ input {
 
 .disabled:hover {
   color: var(--swatch-neutral);
+}
+
+#playlist-selector-heading {
+  height: 50px;
+  padding: 10px;
+  font-size: 40px;
+  /* text-align: center;  */
+}
+#add-list-button {
+  height: 50px;
+  width: 40px;
+  margin-right: 10px;
+  
 }
 
 /* THIS STYLE SHEET MANAGES STYLE FOR OUR MODAL, i.e. DIALOG BOX */
