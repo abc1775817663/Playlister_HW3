@@ -67,9 +67,10 @@ getPlaylistPairs = async (req, res) => {
             return res.status(400).json({ success: false, error: err})
         }
         if (!playlists.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: 'Playlists not found'})
+            return res.status(200).json({ success: true, idNamePairs: [] })
+            // return res
+            //     .status(404)
+            //     .json({ success: false, error: 'Playlists not found'})
         }
         else {
             // PUT ALL THE LISTS INTO ID, NAME PAIRS
@@ -109,6 +110,21 @@ updatePlaylistById = async (req, res) => {
     }
 
 }
+deleteListById = async (req, res) => {
+
+    console.log("deleting playlist...");
+    
+    await Playlist.deleteOne({ _id: req.params.id },(err, list) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        console.log("playlist has been deleted!");
+        return res.status(200).json({ success: true });
+
+    })
+}
+
+
 
 
 module.exports = {
@@ -116,5 +132,6 @@ module.exports = {
     getPlaylists,
     getPlaylistPairs,
     getPlaylistById,
-    updatePlaylistById
+    updatePlaylistById,
+    deleteListById
 }

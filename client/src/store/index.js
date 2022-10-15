@@ -18,6 +18,8 @@ export const GlobalStoreActionType = {
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
+    CLEAR_MARK_LIST: "CLEAR_MARKED_LIST",
+    DELETE_LIST: "DELETE_LIST"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -31,7 +33,8 @@ export const useGlobalStore = () => {
         idNamePairs: [],
         currentList: null,
         newListCounter: 0,
-        listNameActive: false
+        listNameActive: false,
+        markListForDeletion: null
     });
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
@@ -45,7 +48,8 @@ export const useGlobalStore = () => {
                     idNamePairs: payload.idNamePairs,
                     currentList: payload.playlist,
                     newListCounter: store.newListCounter,
-                    listNameActive: false
+                    listNameActive: false,
+                    markListForDeletion: store.markListForDeletion
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -54,7 +58,8 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: null,
                     newListCounter: store.newListCounter,
-                    listNameActive: false
+                    listNameActive: false,
+                    markListForDeletion: store.markListForDeletion
                 })
             }
             // CREATE A NEW LIST
@@ -63,7 +68,8 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     newListCounter: store.newListCounter + 1,
-                    listNameActive: false
+                    listNameActive: false,
+                    markListForDeletion: store.markListForDeletion
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -72,7 +78,8 @@ export const useGlobalStore = () => {
                     idNamePairs: payload,
                     currentList: null,
                     newListCounter: store.newListCounter,
-                    listNameActive: false
+                    listNameActive: false,
+                    markListForDeletion: store.markListForDeletion
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -81,7 +88,29 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: null,
                     newListCounter: store.newListCounter,
-                    listNameActive: false
+                    listNameActive: false,
+                    markListForDeletion: payload
+                });
+            }
+            // FINISHED DELETE A LIST
+            case GlobalStoreActionType.CLEAR_MARK_LIST: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    markListForDeletion: null
+                });
+            }
+            // DELETE A LIST
+            case GlobalStoreActionType.DELETE_LIST: {
+                console.log(payload);
+                return setStore({
+                    idNamePairs: payload,
+                    currentList: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    markListForDeletion: null
                 });
             }
             // UPDATE A LIST
@@ -90,7 +119,8 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     newListCounter: store.newListCounter,
-                    listNameActive: false
+                    listNameActive: false,
+                    markListForDeletion: store.markListForDeletion
                 });
             }
             // START EDITING A LIST NAME
@@ -99,12 +129,48 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     newListCounter: store.newListCounter,
-                    listNameActive: true
+                    listNameActive: true,
+                    markListForDeletion: store.markListForDeletion
                 });
             }
             default:
                 return store;
         }
+    }
+    store.showDeleteListModal = async function(_id){
+        let markedList = store.idNamePairs.filter(list => list._id === _id)[0];
+        console.log(markedList)
+        storeReducer({
+            type: GlobalStoreActionType.MARK_LIST_FOR_DELETION,
+            payload: markedList
+        });
+    }
+
+    store.hideDeleteListModal = async function(){
+        console.log("hiding the modal...");
+        storeReducer({
+            type: GlobalStoreActionType.CLEAR_MARK_LIST,
+        });
+    }
+    store.deleteList = async function(){
+        
+
+        let _id = store.markListForDeletion._id;
+        await api.deleteListById(_id);
+        let updatedNamePairs = store.idNamePairs.filter(list => list._id !== _id);
+
+        console.log(updatedNamePairs);
+
+        storeReducer({
+            type: GlobalStoreActionType.DELETE_LIST,
+            payload: updatedNamePairs
+            
+        });
+
+        // console.log(store.markListForDeletion);
+
+        
+        
     }
 
     store.createNewList = async function(){
@@ -236,6 +302,9 @@ export const useGlobalStore = () => {
             payload: null
         });
     }
+   
+
+
 
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
     return { store, storeReducer };

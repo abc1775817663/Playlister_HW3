@@ -26,12 +26,14 @@ export const getPlaylistPairs = () => api.get('playlistpairs')
 export const getPlaylistById = (id) => api.get(`/playlist/${id}`)
 export const createPlaylist = (list) => api.post("/playlist", list);
 export const updatePlaylistById = (id, playlist) => api.put(`/playlist/${id}`, playlist);
+export const deleteListById = (id) => api.delete(`/playlist/${id}`);
 const apis = {
     getAllPlaylists,
     getPlaylistPairs,
     getPlaylistById,
     createPlaylist,
     updatePlaylistById,
+    deleteListById
 
 }
 
