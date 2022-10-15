@@ -2,7 +2,7 @@ import { useContext, useState } from 'react'
 // import { useHistory } from 'react-router-dom'
 import { GlobalStoreContext } from '../store'
 
-function DeleteListModal(props) {
+function DeleteListModal() {
     const {store} = useContext(GlobalStoreContext);
     console.log(store.markListForDeletion);
         return (

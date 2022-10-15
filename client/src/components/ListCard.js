@@ -100,14 +100,20 @@ function ListCard(props) {
 
     if (editActive) {
         cardElement =
+        <div
+            id={idNamePair._id}
+            key={idNamePair._id}
+            onClick={handleLoadList}
+            className={'list-card ' + selectClass}>
             <input
                 id={"list-" + idNamePair._id}
-                className='list-card'
+                className='list-card-input'
                 type='text'
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
                 defaultValue={idNamePair.name}
-            />;
+            />
+            </div>;
     }
     return (
         cardElement
