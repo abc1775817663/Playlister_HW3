@@ -4,6 +4,7 @@ import AddSong_Transaction from '../common/addSongTransaction'
 import DeleteSong_Transaction from '../common/deleteSongTransaction'
 import EditSong_Transaction from '../common/EditSongTransation'
 import api from '../api'
+import MoveSong_Transaction from '../common/moveSongTransaction'
 export const GlobalStoreContext = createContext({});
 /*
     This is our global data store. Note that it uses the Flux design pattern,
@@ -504,6 +505,19 @@ export const useGlobalStore = () => {
     store.getPlaylistSize = function() {
         return store.currentList.songs.length;
     }
+    store.moveSong = function(start, end) {
+        let songs = this.currentList.songs;
+
+        // WE NEED TO UPDATE THE STATE FOR THE APP
+        console.log(songs);
+        let temp = songs[end];
+        songs[end] = songs[start];
+        songs[start] = temp;
+
+        console.log(songs);
+
+        this.updateCurrentList();
+    }
     store.undo = function () {
         tps.undoTransaction();
     }
@@ -518,6 +532,9 @@ export const useGlobalStore = () => {
     }
     store.addEditSongTransaction = function (title, artist, youTubeId){
         tps.addTransaction(new EditSong_Transaction(this, title, artist, youTubeId));
+    }
+    store.addMoveSongTransaction = function (oldIdx, newIdx){
+        tps.addTransaction(new MoveSong_Transaction(this, oldIdx, newIdx));
     }
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
