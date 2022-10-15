@@ -11,9 +11,8 @@ function SongCard(props) {
         store.showEditSongModal(index);
     }
 
-    let handleRemove = async () => {
-        await store.showDeleteSongModal(index);
-        console.log(store.markSongForDeletionIdx)
+    let handleRemove = () => {
+        store.showDeleteSongModal(index);
     }
     return (
         <div

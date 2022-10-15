@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { StrictMode, useContext, useState } from 'react'
 // import { useHistory } from 'react-router-dom'
 import { GlobalStoreContext } from '../store'
 
@@ -39,9 +39,10 @@ function EditSongModal () {
     let handleConfirm = (event) => {
        console.log(localSongInfo);
 
-        store.saveEditedSong(localSongInfo.title,
-            localSongInfo.artist, 
-            localSongInfo.youTubeId);
+       store.addEditSongTransaction(localSongInfo.title,
+        localSongInfo.artist, 
+        localSongInfo.youTubeId);
+
     }
     let titleInput = document.getElementById("edit-song-modal-title-textfield")
     let artistInput = document.getElementById("edit-song-modal-artist-textfield")

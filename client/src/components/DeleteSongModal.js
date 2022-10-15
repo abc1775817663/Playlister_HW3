@@ -8,9 +8,7 @@ function DeleteSongModal(){
         store.hideDeleteSongModal();
     }
     let deleteSongCallback = (event) => {
-        
-        store.removeSongByIndex();
-
+        store.addDeleteSongTransaction();
     }
     
 
