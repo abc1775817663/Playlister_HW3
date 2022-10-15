@@ -10,6 +10,11 @@ function SongCard(props) {
     let handleEdit = () => {
         store.showEditSongModal(index);
     }
+
+    let handleRemove = async () => {
+        await store.showDeleteSongModal(index);
+        console.log(store.markSongForDeletionIdx)
+    }
     return (
         <div
             key={index}
@@ -29,6 +34,7 @@ function SongCard(props) {
                 id={"remove-song-" + index}
                 className="list-card-button"
                 value={"\u2715"}
+                onClick={handleRemove}
                 
             />
         </div>

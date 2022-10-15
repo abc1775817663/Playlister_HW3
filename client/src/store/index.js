@@ -20,11 +20,12 @@ export const GlobalStoreActionType = {
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     CLEAR_MARK_LIST: "CLEAR_MARKED_LIST",
     DELETE_LIST: "DELETE_LIST",
-    ADD_NEW_SONG: "ADD_NEW_SONG",
+    UPDATE_CURRENT_LIST: "UPDATE_CURRENT_LIST",
     MARK_SONG_FOR_EDITING: "MARK_SONG_FOR_EDITING",
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
     CLEAR_MARK_SONG: "CLEAR_MARK_SONG",
-    UPDATE: "UPDATE"
+    UPDATE: "UPDATE",
+    MARK_SONG_FOR_DELETION: "MARK_SONG_FOR_DELETION",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -41,6 +42,7 @@ export const useGlobalStore = () => {
         listNameActive: false,
         markListForDeletion: null,
         markSongForEditing: null,
+        markSongForDeletionIdx: null,
         songInfoActive: false
         
     });
@@ -59,6 +61,7 @@ export const useGlobalStore = () => {
                     listNameActive: false,
                     markListForDeletion: store.markListForDeletion,
                     markSongForEditing: store.markSongForEditing,
+                    markSongForDeletionIdx: null,
                     songInfoActive: false
                 });
             }
@@ -71,6 +74,7 @@ export const useGlobalStore = () => {
                     listNameActive: false,
                     markListForDeletion: store.markListForDeletion,
                     markSongForEditing: store.markSongForEditing,
+                    markSongForDeletionIdx: store.markSongForDeletionIdx,
                     songInfoActive: false
                 })
             }
@@ -83,6 +87,7 @@ export const useGlobalStore = () => {
                     listNameActive: false,
                     markListForDeletion: store.markListForDeletion,
                     markSongForEditing: store.markSongForEditing,
+                    markSongForDeletionIdx: store.markSongForDeletionIdx,
                     songInfoActive: false
                 })
             }
@@ -95,6 +100,7 @@ export const useGlobalStore = () => {
                     listNameActive: false,
                     markListForDeletion: store.markListForDeletion,
                     markSongForEditing: store.markSongForEditing,
+                    markSongForDeletionIdx: store.markSongForDeletionIdx,
                     songInfoActive: false
                 });
             }
@@ -107,6 +113,7 @@ export const useGlobalStore = () => {
                     listNameActive: false,
                     markListForDeletion: payload,
                     markSongForEditing: store.markSongForEditing,
+                    markSongForDeletionIdx: store.markSongForDeletionIdx,
                     songInfoActive: false
                 });
             }
@@ -118,7 +125,20 @@ export const useGlobalStore = () => {
                     listNameActive: false,
                     markListForDeletion: store.markListForDeletion,
                     markSongForEditing: payload,
+                    markSongForDeletionIdx: store.markSongForDeletionIdx,
                     songInfoActive: true
+                });
+            }
+            case GlobalStoreActionType.MARK_SONG_FOR_DELETION: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    markListForDeletion: store.markListForDeletion,
+                    markSongForEditing: store.markSongForEditing,
+                    markSongForDeletionIdx: payload,
+                    songInfoActive: false
                 });
             }
             // FINISHED DELETE A LIST
@@ -130,6 +150,7 @@ export const useGlobalStore = () => {
                     listNameActive: false,
                     markListForDeletion: null,
                     markSongForEditing: store.markSongForEditing,
+                    markSongForDeletionIdx: store.markSongForDeletionIdx,
                     songInfoActive: false
                 });
             }
@@ -142,6 +163,7 @@ export const useGlobalStore = () => {
                     listNameActive: false,
                     markListForDeletion: store.markListForDeletion,
                     markSongForEditing: null,
+                    markSongForDeletionIdx: null,
                     songInfoActive: false
                 });
             }
@@ -156,6 +178,7 @@ export const useGlobalStore = () => {
                     listNameActive: false,
                     markListForDeletion: null,
                     markSongForEditing: store.markSongForEditing,
+                    markSongForDeletionIdx: store.markSongForDeletionIdx,
                     songInfoActive: false
                 });
             }
@@ -168,6 +191,7 @@ export const useGlobalStore = () => {
                     listNameActive: false,
                     markListForDeletion: store.markListForDeletion,
                     markSongForEditing: store.markSongForEditing,
+                    markSongForDeletionIdx: store.markSongForDeletionIdx,
                     songInfoActive: false
                 });
             }
@@ -180,17 +204,19 @@ export const useGlobalStore = () => {
                     listNameActive: true,
                     markListForDeletion: store.markListForDeletion,
                     markSongForEditing: store.markSongForEditing,
+                    markSongForDeletionIdx: store.markSongForDeletionIdx,
                     songInfoActive: false
                 });
             }
-            case GlobalStoreActionType.ADD_NEW_SONG: {
+            case GlobalStoreActionType.UPDATE_CURRENT_LIST: {
                 return setStore({
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     newListCounter: store.newListCounter,
-                    listNameActive: true,
+                    listNameActive: store.listNameActive,
                     markListForDeletion: store.markListForDeletion,
                     markSongForEditing: store.markSongForEditing,
+                    markSongForDeletionIdx: store.markSongForDeletionIdx,
                     songInfoActive: false
                 });
             }
@@ -202,6 +228,7 @@ export const useGlobalStore = () => {
                     listNameActive: store.listNameActive,
                     markListForDeletion: store.markListForDeletion,
                     markSongForEditing: store.markSongForEditing,
+                    markSongForDeletionIdx: store.markSongForDeletionIdx,
                     songInfoActive: false
                 });
             }
@@ -263,7 +290,7 @@ export const useGlobalStore = () => {
         this.currentList.songs.push({artist: "Unknown", title: "Untitled", youTubeId: "dQw4w9WgXcQ"});
         await api.updatePlaylistById(this.currentList._id, this.currentList)
         storeReducer({
-            type: GlobalStoreActionType.ADD_NEW_SONG,
+            type: GlobalStoreActionType.UPDATE_CURRENT_LIST,
             payload: this.currentList
         });
     }
@@ -287,19 +314,6 @@ export const useGlobalStore = () => {
         this.setCurrentList(_id);
 
 
-
-        // const response = await api.getPlaylistPairs();
-        //     if (response.data.success) {
-        //         let pairs = response.data.idNamePairs;
-        //         let _id = pairs[pairs.length-1]._id;
-        //         document.getElementById("edit-list-"+_id).click();
-                
-        //     }
-        //     else {
-        //         console.log("API FAILED TO GET THE LIST PAIRS");
-        //     }
-
-
     }
     store.saveEditedSong = function(title,artist, youTubeId){
         this.markSongForEditing.artist = artist;
@@ -312,6 +326,37 @@ export const useGlobalStore = () => {
         // });
         
 
+    }
+
+    store.showDeleteSongModal = async function(idx){
+        console.log("showing delete song modal...");
+        // let markedSong = this.currentList.songs[idx];
+        // console.log(markedSong);
+        storeReducer({
+            type: GlobalStoreActionType.MARK_SONG_FOR_DELETION,
+            payload: idx
+        });
+    }
+
+    store.hideDeleteSongModal = async function(){
+        console.log("hiding the modal...");
+        storeReducer({
+            type: GlobalStoreActionType.CLEAR_MARK_SONG,
+        });
+    }
+
+    store.removeSongByIndex = async function(){
+        console.log(this);
+        console.log(this.currentList);
+        this.currentList.songs.splice(this.markSongForDeletionIdx,1);
+        console.log(this.currentList);
+        
+        await api.updatePlaylistById(this.currentList._id, this.currentList);
+        this.hideDeleteSongModal();
+        // storeReducer({
+        //     type: GlobalStoreActionType.UPDATE_CURRENT_LIST,
+        //     payload: this.currentList
+        // });
     }
     // THESE ARE THE FUNCTIONS THAT WILL UPDATE OUR STORE AND
     // DRIVE THE STATE OF THE APPLICATION. WE'LL CALL THESE IN 

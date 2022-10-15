@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Banner, DeleteListModal, ListSelector, PlaylistCards, Statusbar } from './components'
 import { GlobalStoreContext } from './store'
 import EditSongModal from './components/EditSongModal';
+import DeleteSongModal from './components/DeleteSongModal';
 /*
     This is our application's top-level component.
     
@@ -22,6 +23,7 @@ const App = () => {
             </Switch>
             <Statusbar />
         <DeleteListModal/>
+        <DeleteSongModal/>
         <EditSongModal/>
         </Router>
     )
