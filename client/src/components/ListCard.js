@@ -45,7 +45,11 @@ function ListCard(props) {
             let id = event.target.id.substring("list-".length);
             store.changeListName(id, text);
             toggleEdit();
+            store.listNameActive = false;
+            store.update();
+
         }
+        
     }
     function handleUpdateText(event) {
         setText(event.target.value );
@@ -64,10 +68,8 @@ function ListCard(props) {
     if (selected) {
         selectClass = "selected-list-card";
     }
-    let cardStatus = false;
-    if (store.isListNameEditActive) {
-        cardStatus = true;
-    }
+
+
     let cardElement =
         <div
             id={idNamePair._id}
@@ -81,18 +83,18 @@ function ListCard(props) {
                 {idNamePair.name}
             </span>
             <input
-                disabled={cardStatus}
+                disabled={store.listNameActive}
                 type="button"
                 id={"delete-list-" + idNamePair._id}
-                className="list-card-button"
+                className={"list-card-button" + (store.listNameActive?" disabled":"")}
                 onClick={handleDelete}
                 value={"\u2715"}
             />
             <input
-                disabled={cardStatus}
+                disabled={store.listNameActive}
                 type="button"
                 id={"edit-list-" + idNamePair._id}
-                className="list-card-button"
+                className={"list-card-button" + (store.listNameActive?" disabled":"")}
                 onClick={handleToggleEdit}
                 value={"\u270E"}
             />

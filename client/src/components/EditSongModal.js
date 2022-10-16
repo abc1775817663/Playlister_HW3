@@ -53,7 +53,7 @@ function EditSongModal () {
         artistInput.value =localSongInfo.artist;
         youTubeIdInput.value = localSongInfo.youTubeId;
     }
-
+    store.addKeyPress();
     return (
         <div
             class={"modal " + (store.markSongForEditing ? "is-visible" : "")} 

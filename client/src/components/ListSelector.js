@@ -36,8 +36,9 @@ const ListSelector = () => {
                 <input
                     type="button"
                     id="add-list-button"
+                    disabled={store.listNameActive}
                     onClick={handleCreateNewList}
-                    className="playlister-button"
+                    className={"playlister-button" + (store.listNameActive?" disabled":"")}
                     value="+" />
                 Your Lists
                 

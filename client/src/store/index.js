@@ -62,7 +62,7 @@ export const useGlobalStore = () => {
             case GlobalStoreActionType.CHANGE_LIST_NAME: {
                 return setStore({
                     idNamePairs: payload.idNamePairs,
-                    currentList: payload.playlist,
+                    currentList: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     markListForDeletion: store.markListForDeletion,
@@ -269,6 +269,7 @@ export const useGlobalStore = () => {
                 return store;
         }
     }
+    
     store.showDeleteListModal = async function(_id){
         let markedList = store.idNamePairs.filter(list => list._id === _id)[0];
         console.log(markedList)
@@ -371,6 +372,12 @@ export const useGlobalStore = () => {
         //     type: GlobalStoreActionType.UPDATE
         // });
     }
+    store.update = function(){
+        
+        storeReducer({
+            type: GlobalStoreActionType.UPDATE
+        });
+    }
     store.updateCurrentList = function(){
         api.updatePlaylistById(this.currentList._id, this.currentList);
         storeReducer({
@@ -461,6 +468,7 @@ export const useGlobalStore = () => {
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
+        this.clearAllTransaction();
         storeReducer({
             type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
             payload: {}
@@ -524,6 +532,12 @@ export const useGlobalStore = () => {
     store.redo = function () {
         tps.doTransaction();
     }
+    store.hasTransactionToUndo = function(){
+        return tps.hasTransactionToUndo();
+    }
+    store.hasTransactionToRedo = function(){
+        return tps.hasTransactionToRedo();
+    }
     store.addAddSongTransaction = function () {
         tps.addTransaction(new AddSong_Transaction(this));
     }
@@ -536,6 +550,9 @@ export const useGlobalStore = () => {
     store.addMoveSongTransaction = function (oldIdx, newIdx){
         tps.addTransaction(new MoveSong_Transaction(this, oldIdx, newIdx));
     }
+    store.clearAllTransaction = function() {
+        tps.clearAllTransactions();
+    }
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
     store.setlistNameActive = function () {
@@ -544,6 +561,24 @@ export const useGlobalStore = () => {
             payload: null
         });
     }
+    store.addKeyPress = function() {
+        function KeyPress(store,evtobj) {
+            let modalVisible = store.markSongForEditing != null || store.markSongForDeletionIdx!=null || store.markListForDeletion!=null;
+            
+            if (!modalVisible){
+            
+                if (evtobj.key == "z" && evtobj.ctrlKey){
+                    store.undo();
+                }
+                if (evtobj.key == "y" && evtobj.ctrlKey){
+                    store.redo();
+                } 
+            }
+        }
+        
+        document.onkeydown = (e) => KeyPress(this,e);
+        
+    }
    
 
 
@@ -551,3 +586,5 @@ export const useGlobalStore = () => {
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
     return { store, storeReducer };
 }
+
+
